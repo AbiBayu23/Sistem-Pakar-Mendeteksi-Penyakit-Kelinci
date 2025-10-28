@@ -1,0 +1,66 @@
+def run_inference_engine(initial_facts, rules):
+    facts = initial_facts.copy()
+    facts_newly_derived = True
+    derived_cf_values = {}
+    while facts_newly_derived:
+        facts_newly_derived = False
+
+        for rule in rules:
+            rule_id = rule['id']
+            premises = rule['if']      # Daftar premis (cth: ["G01"])
+            conclusion = rule['then']  # Kesimpulan (cth: "P01")
+            cf_pakar = rule['cf_pakar'] # Nilai CF dari pakar [cite: 374, 378]
+
+            # --- 1. CEK PREMIS (Kecocokan Aturan) ---
+            all_premises_met = True
+            min_cf_premis = 1.0
+
+            for premis in premises:
+                if premis not in facts:
+                    all_premises_met = False
+                    break
+                else:
+                    min_cf_premis = min(min_cf_premis, facts[premis])
+
+            # --- 2. EKSEKUSI ATURAN (Aturan "Fire") ---
+            # Jika semua premis terpenuhi (all_premises_met == True)
+            if all_premises_met:
+
+                # --- 3. HITUNG CF (Bagian 1) ---
+                cf_gejala = 0.0
+                is_sequential_rule = False
+
+                # Cek apakah premisnya adalah fakta awal (gejala)
+                if premises[0] in initial_facts:
+                    cf_user = facts[premises[0]]
+                    cf_gejala = cf_user * cf_pakar
+                else:
+                    cf_gejala = min_cf_premis * cf_pakar
+                    is_sequential_rule = True
+
+                # --- 4. SIMPAN HASIL CF (untuk Aturan Paralel) ---
+                if conclusion not in derived_cf_values:
+                    derived_cf_values[conclusion] = []
+                if cf_gejala not in derived_cf_values[conclusion]:
+                     derived_cf_values[conclusion].append(cf_gejala)
+
+    # --- 5. GABUNGKAN (COMBINE) ATURAN PARALEL  ---
+    final_facts = facts.copy() # Salin fakta awal ke hasil akhir
+
+    for conclusion, cf_list in derived_cf_values.items():
+        if not cf_list:
+            continue
+        combined_cf = cf_list[0]
+        if len(cf_list) > 1:
+            for i in range(1, len(cf_list)):
+                combined_cf = combine_cf(combined_cf, cf_list[i])
+
+        if conclusion not in final_facts or combined_cf > final_facts[conclusion]:
+            final_facts[conclusion] = combined_cf
+            facts_newly_derived = True
+
+    # --- 6. REKURSI / PENGULANGAN LOOP ---
+    if facts_newly_derived and initial_facts != facts:
+        facts_turunan = {k: v for k, v in final_facts.items() if k not in initial_facts}
+        return run_inference_engine(facts_turunan, rules)
+    return final_facts
