@@ -1,0 +1,153 @@
+[
+{
+    "id": "R01", "if": ["G01"], "then": "P01", "cf_pakar": 0.6
+},
+{
+    "id": "R02", "if": ["G02"], "then": "P01", "cf_pakar": 0.6
+},
+{
+    "id": "R03", "if": ["G03"], "then": "P01", "cf_pakar": 0.8
+},
+{
+    "id": "R04", "if": ["G04"], "then": "P01", "cf_pakar": 0.8
+},
+{
+    "id": "R05", "if": ["G05"], "then": "P01", "cf_pakar": 0.8
+},
+{
+    "id": "R06", "if": ["G06"], "then": "P01", "cf_pakar": 1.0
+},
+{
+    "id": "R07", "if": ["G07"], "then": "P01", "cf_pakar": 0.2
+},
+{
+    "id": "R08", "if": ["G08"], "then": "P01", "cf_pakar": 0.6
+},
+{
+    "id": "R09", "if": ["G09"], "then": "P01", "cf_pakar": 0.0
+},
+
+{
+    "id": "R10", "if": ["G10"], "then": "P02", "cf_pakar": 0.6
+},
+{
+    "id": "R11", "if": ["G01"], "then": "P02", "cf_pakar": 0.8
+},
+{
+    "id": "R12", "if": ["G02"], "then": "P02", "cf_pakar": 0.6
+},
+{
+    "id": "R13", "if": ["G11"], "then": "P02", "cf_pakar": 0.6
+},
+{
+    "id": "R14", "if": ["G12"], "then": "P02", "cf_pakar": 1.0
+},
+{
+    "id": "R15", "if": ["G13"], "then": "P02", "cf_pakar": 0.8
+},
+
+{
+    "id": "R16", "if": ["G01"], "then": "P03", "cf_pakar": 0.8
+},
+{
+    "id": "R17", "if": ["G02"], "then": "P03", "cf_pakar": 0.6
+},
+{
+    "id": "R18", "if": ["G08"], "then": "P03", "cf_pakar": 0.4
+},
+{
+    "id": "R19", "if": ["G05"], "then": "P03", "cf_pakar": 0.6
+},
+{
+    "id": "R20", "if": ["G14"], "then": "P03", "cf_pakar": 1.0
+},
+{
+    "id": "R21", "if": ["G15"], "then": "P03", "cf_pakar": 0.6
+},
+{
+    "id": "R22", "if": ["G16"], "then": "P03", "cf_pakar": 0.8
+},
+
+
+{
+    "id": "R23", "if": ["G10"], "then": "P04", "cf_pakar": 0.8
+},
+{
+    "id": "R24", "if": ["G01"], "then": "P04", "cf_pakar": 0.6
+},
+{
+    "id": "R25", "if": ["G02"], "then": "P04", "cf_pakar": 0.6
+},
+{
+    "id": "R26", "if": ["G17"], "then": "P04", "cf_pakar": 0.6
+},
+{
+    "id": "R27", "if": ["G18"], "then": "P04", "cf_pakar": 1.0
+},
+{
+    "id": "R28", "if": ["G22"], "then": "P04", "cf_pakar": 0.2
+},
+
+{
+    "id": "R29", "if": ["G10"], "then": "P05", "cf_pakar": 0.6
+},
+{
+    "id": "R30", "if": ["G01"], "then": "P05", "cf_pakar": 0.4
+},
+{
+    "id": "R31", "if": ["G02"], "then": "P05", "cf_pakar": 0.6
+},
+{
+    "id": "R32", "if": ["G05"], "then": "P05", "cf_pakar": 0.4
+},
+{
+    "id": "R33", "if": ["G20"], "then": "P05", "cf_pakar": 0.4
+},
+{
+    "id": "R34", "if": ["G21"], "then": "P05", "cf_pakar": 0.6
+},
+{
+    "id": "R35", "if": ["G07"], "then": "P05", "cf_pakar": 0.8
+},
+{
+    "id": "R36", "if": ["G19"], "then": "P05", "cf_pakar": 0.8
+},
+{
+    "id": "R37", "if": ["G22"], "then": "P05", "cf_pakar": 0.8
+},
+{
+    "id": "R38", "if": ["G11"], "then": "P05", "cf_pakar": 0.2
+},
+
+{
+    "id": "R39", "if": ["G10"], "then": "P06", "cf_pakar": 0.4
+},
+{
+    "id": "R40", "if": ["G01"], "then": "P06", "cf_pakar": 0.4
+},
+{
+    "id": "R41", "if": ["G02"], "then": "P06", "cf_pakar": 0.6
+},
+{
+    "id": "R42", "if": ["G24"], "then": "P06", "cf_pakar": 1.0
+},
+{
+    "id": "R43", "if": ["G23"], "then": "P06", "cf_pakar": 0.6
+},
+{
+    "id": "R44", "if": ["G10"], "then": "P06", "cf_pakar": 0.6
+},
+
+{
+    "id": "R45_MODIFIKASI_SEKUENTIAL",
+    "if": ["P01"],
+    "then": "K01_Infeksi_Sekunder",
+    "cf_pakar": 0.7
+},
+{
+    "id": "R46_MODIFIKASI_SEKUENTIAL",
+    "if": ["P06"],
+    "then": "K02_Gagal_Napas_Akut",
+    "cf_pakar": 0.8
+}
+]
