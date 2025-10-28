@@ -1,0 +1,101 @@
+  # Mengimpor library ipywidgets untuk membuat UI interaktif di Colab
+import ipywidgets as widgets
+# Mengimpor display (untuk menampilkan widget) dan clear_output (untuk membersihkan hasil)
+from IPython.display import display, clear_output
+
+# --- 1. Definisi Data (dari Jurnal File 1) ---
+
+daftar_gejala = {
+    "G01": "Nafsu makan hilang", "G02": "Berat badan turun", "G03": "Kulit kemerah-merahan",
+    "G04": "Badan penuh koreng", "G05": "Bulu rontok", "G06": "Gatal-gatal pada tubuh",
+    "G07": "Sulit hamil/keguguran", "G08": "Kulit telinga kemerah-merahan",
+    "G09": "Area sekitar mata berwarna merah", "G10": "Badan Lemas", "G11": "Diare",
+    "G12": "Muntah", "G13": "Suhu tubuh tinggi", "G14": "Menggaruk daun telinga",
+    "G15": "Keluar cairan dalam lubang telinga", "G16": "Gatal dan sakit pada telinga",
+    "G17": "Keluar cairan bernanah dari mata", "G18": "Radang kelopak mata berwarna merah",
+    "G19": "Tulang kaki lemah dan bengkok", "G20": "Suka makan bulu", "G21": "Kanibal",
+    "G22": "Tidak kuat menahan berat badan", "G23": "Keluar cairan dalam hidung",
+    "G24": "Sesak nafas"
+}
+
+daftar_penyakit = {
+    "P01": "Scabies", "P02": "Gastroenteritis", "P03": "Radang Telinga",
+    "P04": "Radang Mata", "P05": "Hipocalcium", "P06": "Pneumonia",
+    "K01_Infeksi_Sekunder": "Komplikasi: Infeksi Kulit Sekunder (MODIFIKASI)",
+    "K02_Gagal_Napas_Akut": "Komplikasi: Gagal Napas Akut (MODIFIKASI)"
+}
+
+cf_user_options = [
+    ("Pilih Keyakinan", 0.0),
+    ("Pasti Tidak", -1.0),
+    ("Hampir Pasti Tidak", -0.8),
+    ("Kemungkinan Besar Tidak", -0.6),
+    ("Mungkin Tidak", -0.4),
+    ("Tidak Tahu", 0.0),
+    ("Mungkin Ya", 0.4),
+    ("Kemungkinan Besar Ya", 0.6),
+    ("Hampir Pasti Ya", 0.8),
+    ("Pasti Ya", 1.0)
+]
+
+# --- 2. Buat Instance Widget UI ---
+
+print("--- 🩺 Sistem Pakar Deteksi Penyakit Kelinci ---")
+print("Silakan pilih gejala yang dialami kelinci dan tingkat keyakinan Anda:")
+
+ui_widgets = {}
+ui_elements_to_display = [] # List untuk menampung widget yang akan ditampilkan
+
+for kode, nama in daftar_gejala.items():
+    checkbox = widgets.Checkbox(value=False, description=nama, layout={'width': '400px'})
+    dropdown = widgets.Dropdown(options=cf_user_options, value=0.0, layout={'width': '200px'})
+    ui_widgets[kode] = (checkbox, dropdown)
+    ui_elements_to_display.append(widgets.HBox([checkbox, dropdown]))
+
+# Buat Tombol untuk memulai diagnosis
+diagnosis_button = widgets.Button(description="📊 Mulai Diagnosis", button_style='success', layout={'width': '600px'})
+output_area = widgets.Output()
+
+# --- 3. Fungsi Event Handler (Logika Saat Tombol Diklik) ---
+
+def on_diagnosis_button_clicked(b):
+
+    with output_area:
+        clear_output(wait=True)
+        print("🔍 Menganalisis fakta...")
+
+        # --- Kumpulkan Fakta Awal dari UI ---
+        initial_facts = {}
+        for kode, (checkbox, dropdown) in ui_widgets.items():
+            if checkbox.value and dropdown.value != 0.0:
+                initial_facts[kode] = dropdown.value
+
+        if not initial_facts:
+            print("❌ Tidak ada gejala yang dipilih atau tidak ada keyakinan yang diberikan.")
+            return
+
+        print(f"Fakta Awal Diterima: {initial_facts}")
+
+        rules = load_rules('/content/drive/MyDrive/sispak/rules.json')
+
+        # --- Jalankan Mesin Inferensi ---
+        final_facts = run_inference_engine(initial_facts, rules)
+        hasil_diagnosis = {k: v for k, v in final_facts.items() if k not in initial_facts}
+
+        if not hasil_diagnosis:
+            print("🏁 Tidak ada penyakit yang dapat disimpulkan dari gejala ini.")
+            return
+
+        # Urutkan hasil dari CF tertinggi ke terendah
+        sorted_hasil = sorted(hasil_diagnosis.items(), key=lambda item: item[1], reverse=True)
+
+        print("\n--- 📋 HASIL DIAGNOSIS ---")
+        for kode, cf in sorted_hasil:
+            nama_penyakit = daftar_penyakit.get(kode, f"Kode Tidak Dikenal ({kode})")
+            persentase = cf * 100
+            print(f"**{nama_penyakit}**: {persentase:.2f}%")
+
+diagnosis_button.on_click(on_diagnosis_button_clicked)
+
+# --- 4. Tampilkan Semua Widget ---
+display(*ui_elements_to_display, diagnosis_button, output_area)
